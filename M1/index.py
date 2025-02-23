@@ -17,8 +17,8 @@ def update_partial_index(partial: defaultdict, token_frequency: dict, doc_id: in
     """
     Updates the partial dict by adding the postings for each token
     """
-    for token in token_frequency.keys():
-        partial[token].append(doc_id, token_frequency[token])
+    for freq_pair in token_frequency:
+        partial[freq_pair[0]].append(doc_id, freq_pair[1])
 
 def dump_partial_index(json_file: str, partial_index: dict):
     """
@@ -27,5 +27,14 @@ def dump_partial_index(json_file: str, partial_index: dict):
     with open(json_file, "w", encoding="utf-8") as file:
         json.dump(partial_index, file, indent=4)
 
+class Indexer:
+    def __init__(self):
+         directory = Path("/partial_indexes")
+         directory.mkdir(parents=True, exist_ok=True)
+         curr_doc_id = 0
+         pages_read = 0
+         index_files = []
+         partial_index = defaultdict(list)
 
-
+    def run(self, files: iter):
+        pass
