@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer 
 
 def extract_contents(file_path: str):
     """
@@ -23,3 +24,5 @@ def tokenize_text(text):
     clean_text = re.sub(r'[^a-zA-Z0-9\s]', '', text).lower()
     return word_tokenize(clean_text)
 
+def porter_stem(text: str):
+    pass

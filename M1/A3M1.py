@@ -1,5 +1,5 @@
 import parse as p
-import tokenize as t
+import tokenizer as t
 import index
 import nltk
 

@@ -1,5 +1,5 @@
 import os
-import tokenize
+import tokenizer
 
 def traverse_directory(root: str) -> iter:
     """
@@ -24,9 +24,9 @@ def compute_word_frequncies(tokens: list) -> dict:
     return sorted_frequencies
 
 def parse(file: str):
-    content = tokenize.extract_contents(file)
-    extracted_html_content = tokenize.extract_text(content['content'])
-    tokens = tokenize.tokenize_text(extracted_html_content)
+    content = tokenizer.extract_contents(file)
+    extracted_html_content = tokenizer.extract_text(content['content'])
+    tokens = tokenizer.tokenize_text(extracted_html_content)
     frequencies = compute_word_frequncies(tokens)
 
     return frequencies
