@@ -3,7 +3,7 @@ import os
 import json
 #12:33
 
-def traverse_directory(root: str) -> list[str]:
+def traverse_directory(root: str) -> iter:
     """
     Given a file path, recursively traverses a directory and returns a list of all .json files.
     """
@@ -13,7 +13,6 @@ def traverse_directory(root: str) -> list[str]:
             total_files.append(os.path.join(root, file))
         for dir in dirs:
             os.path.join(root, dir)
-    
     return total_files
 
 def parse_all(total_files: list[str]):
@@ -40,3 +39,6 @@ def extract_text(html_content):
     """
     soup = BeautifulSoup(html_content, 'html.parser')
     return soup.get_text(separator=' ', strip=True)
+
+
+print(len(list(traverse_directory("C:\\Users\\Justi\\Downloads\\CS121\\Assignment3M1\\cs_121_A3\\DEV"))))
