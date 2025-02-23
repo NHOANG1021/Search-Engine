@@ -24,8 +24,7 @@ def compute_word_frequncies(tokens: list) -> list:
         else:
             token_dict[token] += 1
             
-    sorted_frequencies = sorted(token_dict.items(), key=lambda x: (x[0], -x[1]))
-    return sorted_frequencies
+    return token_dict
 
 def parse(file: str):
     """
