@@ -1,4 +1,6 @@
 import os
+from bs4 import BeautifulSoup
+import json
 import tokenize
 
 def traverse_directory(root: str) -> iter:
@@ -12,21 +14,27 @@ def traverse_directory(root: str) -> iter:
             os.path.join(root, dir)
     
 
-def compute_word_frequncies(tokens: list) -> dict:
-    token_dict = {}
-    for token in tokens:
-        if token not in token_dict.keys():
-            token_dict[token] = 1
-        else:
-            token_dict[token] += 1
-            
-    sorted_frequencies = sorted(token_dict.items(), key=lambda x: (x[0], -x[1]))
-    return sorted_frequencies
+def parse_all(total_files: list[str]):
+    data = {}
+    doc_id = 0
+    for file in total_files:
+        url, html_content = extract_contents(file)
+        extracted_html_content = extract_text(html_content)
+        data[doc_id] = url, extracted_html_content
+        doc_id += 1
+        print(doc_id)
+    
+    with open("data.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
-def parse(file: str):
-    content = tokenize.extract_contents(file)
-    extracted_html_content = tokenize.extract_text(content['content'])
-    tokens = tokenize.tokenize_text(extracted_html_content)
-    frequencies = compute_word_frequncies(tokens)
+def extract_contents(file_path: str):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = json.load(f)
+    return content['url'] , content['content']
 
-    return frequencies
+def extract_text(html_content):
+    """
+    Extracts all text from the given HTML content.
+    """
+    soup = BeautifulSoup(html_content, 'html.parser')
+    return soup.get_text(separator=' ', strip=True)
