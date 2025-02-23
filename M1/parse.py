@@ -11,7 +11,7 @@ def traverse_directory(root: str) -> iter:
         for dir in dirs:
             os.path.join(root, dir)
 
-def compute_word_frequncies(tokens: list) -> dict:
+def compute_word_frequencies(tokens: list) -> list:
     token_dict = {}
     for token in tokens:
         if token not in token_dict.keys():
@@ -19,13 +19,11 @@ def compute_word_frequncies(tokens: list) -> dict:
         else:
             token_dict[token] += 1
             
-    sorted_frequencies = sorted(token_dict.items(), key=lambda x: (x[0], -x[1]))
-    return sorted_frequencies
+    return token_dict
 
-def parse(file: str):
-    content = tokenizer.extract_contents(file)
-    extracted_html_content = tokenizer.extract_text(content['content'])
+def parse(content: str):
+    extracted_html_content = tokenizer.extract_text(content)
     tokens = tokenizer.tokenize_text(extracted_html_content)
-    frequencies = compute_word_frequncies(tokens)
+    frequencies = compute_word_frequencies(tokens)
     
     return frequencies
