@@ -32,9 +32,9 @@ class Indexer:
          directory = Path("/partial_indexes")
          directory.mkdir(parents=True, exist_ok=True)
          curr_doc_id = 0
-         pages_read = 0
          index_files = []
          partial_index = defaultdict(list)
 
     def run(self, files: iter):
-        pass
+        for file in files:
+            pass

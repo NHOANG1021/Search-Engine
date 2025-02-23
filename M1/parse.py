@@ -27,3 +27,5 @@ def parse(file: str):
     extracted_html_content = tokenizer.extract_text(content['content'])
     tokens = tokenizer.tokenize_text(extracted_html_content)
     frequencies = compute_word_frequncies(tokens)
+    
+    return frequencies
