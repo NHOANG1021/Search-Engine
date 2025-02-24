@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
 import json
 import re
-import lxml
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, RegexpTokenizer
 from nltk.stem import PorterStemmer 
 
 def extract_contents(file_path: str) -> dict:
@@ -13,14 +12,15 @@ def extract_contents(file_path: str) -> dict:
         content = json.load(f)
     return content
 
-def extract_text(html_content: dict) -> str:
+def extract_text(html_content: str) -> str:
     """
     Extracts all text from the given HTML content.
     """
     # add weights for BOLD, TITLES, HEADERS
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
     return soup.get_text(separator=' ', strip=True)
 
+# Not used yet
 def extract_special_text(html_content):
     """
     Extracts only the words from title, headers, and bold tags from the given HTML content.
@@ -39,6 +39,14 @@ def tokenize_text(text: str) -> list[str]:
     """
     clean_text = re.sub(r'[^a-zA-Z0-9\s]', '', text).lower()
     return word_tokenize(clean_text)
+
+def tokenGenerator(text: str):
+    """
+    Yields tokens that match regex pattern
+    """
+    token_maker = RegexpTokenizer(r'[a-zA-Z0-9]+')
+    for token in token_maker.tokenize(text.lower()):
+        yield token
 
 def porter_stem(tokens: list[str]) -> list[str]:
     """
