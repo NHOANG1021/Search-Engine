@@ -8,9 +8,6 @@ def traverse_directory(root: str) -> iter:
     for root, dirs, files in os.walk(root):
         for file in files:
             yield os.path.join(root, file)
-        for dir in dirs:
-            os.path.join(root, dir)
-    
 
 def compute_word_frequncies(tokens: list) -> list:
     """
@@ -19,20 +16,19 @@ def compute_word_frequncies(tokens: list) -> list:
     """
     token_dict = {}
     for token in tokens:
-        if token not in token_dict.keys():
+        if token not in token_dict:
             token_dict[token] = 1
         else:
             token_dict[token] += 1
             
     return token_dict
 
-def parse(file: str):
+def parse(content: str):
     """
     Calls all the necessary functions to parse
     """
-    content = tokenizer.extract_contents(file)
-    extracted_html_content = tokenizer.extract_text(content['content'])
-    extracted_important_words = tokenizer.extract_special_text(content['content'])
+    extracted_html_content = tokenizer.extract_text(content)
+    extracted_important_words = tokenizer.extract_special_text(content)
     tokens = tokenizer.tokenize_text(extracted_html_content)
     important_tokens = tokenizer.tokenize_text(extracted_important_words)  # Use later
     stem_tokens =  tokenizer.porter_stem(tokens)

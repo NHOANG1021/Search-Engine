@@ -16,14 +16,14 @@ def extract_text(html_content: dict) -> str:
     """
     Extracts all text from the given HTML content.
     """
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
     return soup.get_text(separator=' ', strip=True)
 
 def extract_special_text(html_content):
     """
     Extracts only the words from title, headers, and bold tags from the given HTML content.
     """
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
     title_text = soup.title.get_text(strip=True) if soup.title else ''
     header_text = ' '.join([element.get_text(strip=True) for element in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])])
     bold_text = ' '.join([element.get_text(strip=True) for element in soup.find_all(['b', 'strong'])])
