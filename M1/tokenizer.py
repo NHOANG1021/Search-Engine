@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import json
 import re
+import lxml
 from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer 
 
@@ -17,7 +18,7 @@ def extract_text(html_content):
     Extracts all text from the given HTML content.
     """
     # add weights for BOLD, TITLES, HEADERS
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
     return soup.get_text(separator=' ', strip=True)
 
 def tokenize_text(text):

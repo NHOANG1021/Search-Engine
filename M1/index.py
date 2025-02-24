@@ -21,7 +21,7 @@ class Indexer:
         Updates the partial dict by adding the postings for each token
         """
         for token, freq in token_frequency.items():
-                self.partial_index[token].append([self.curr_doc_id, freq])  # Use a tuple instead of a set
+                self.partial_index[token].append([self.curr_doc_id, freq])
 
     def update_id_map(self, url: str, csv_file: str) -> None:
         """
@@ -29,69 +29,72 @@ class Indexer:
         """
         with open(csv_file, 'a+', newline='') as f:
             csv_writer = writer(f)
-            csv_writer.writerow([self.curr_doc_id, url.strip('"')])
+            csv_writer.writerow([self.curr_doc_id, url])
 
-    def dump_partial_index(self, json_file: str):
+    def dump_partial_index(self, storage_file: str):
         """
         Dumps the partial index into a file on the disk with a more compact format.
+        Each line contains a key-value pair in JSON format.
         """
-        with open(json_file, "w", encoding="utf-8") as file:
-            json.dump(self.partial_index, file, separators=(",", ": "))
+        with open(storage_file, "w", encoding="utf-8") as file:
+            for key in sorted(self.partial_index.keys()):
+                file.write(json.dumps({key: self.partial_index[key]}) + "\n")
 
     def make_partial_index(self):
-        file_path = f"{self.directory}//{len(self.index_files)}.json"
+        file_path = f"{self.directory}//{len(self.index_files)}.txt"
         self.dump_partial_index(file_path)
         self.partial_index = defaultdict(list)
         self.index_files.append(file_path)
 
+    def file_line_generator(self, file_name):
+        with open(file_name, "r", encoding="utf-8") as f:
+            for line in f:
+                if line:
+                    yield json.loads(line)
+
     def load_partial_indexes(self):
         iterators = []
-        opened_files = []
         for file_name in self.index_files:
             try:
-                file = open(file_name, "r")
-                opened_files.append(file)
-                data = json.load(file)
-                iterators.append(data.items())
+                contents = self.file_line_generator(file_name)
+                iterators.append(contents)
             except Exception as e:
                 print(f"Error loading {file_name}: {e}")
-        return iterators, opened_files
+        return iterators
 
     def merge_indexes(self, iterators):
-        return merge(*iterators)
+        return merge(*iterators, key=lambda x: list(x.keys())[0])
 
-    def process_merged_index(self, merged_index):
-        final_index = {}
-        current_term = None
+    def process_merged_index(self, merged_index, output_file):
+        current_token = None
         current_postings = []
 
-        for term, postings in merged_index:
-            if term != current_term:
-                if current_term is not None:
-                    # Deduplicate and sort the postings list
-                    final_index[current_term] = current_postings
-                current_term = term
-                current_postings = postings
-            else:
-                current_postings.extend(postings)
+        with open(output_file, "w", encoding="utf-8") as output:
+            for entry in merged_index:
+                token, postings = list(entry.items())[0]  # Extract token and postings
+                if token != current_token:
+                    if current_token is not None:
+                        # Write the postings for the previous token to the output file
+                        output.write(json.dumps({current_token: current_postings}) + "\n")
+                    # Start a new token
+                    current_token = token
+                    current_postings = postings
+                else:
+                    # Extend the postings for the current token
+                    current_postings.extend(postings)
 
-        # Add the last term
-        if current_term is not None:
-            final_index[current_term] = current_postings
-        
-        return final_index
+            # Write the last token's postings to the output file
+            if current_token is not None:
+                output.write(json.dumps({current_token: current_postings}) + "\n")
 
     def merge_partial_index(self, output_file):
-        iterators, opened_files = self.load_partial_indexes()
+        """
+        Merges all partial indexes into a final index and writes it to the output file incrementally.
+        """
+        iterators = self.load_partial_indexes()
         merged_index = self.merge_indexes(iterators)
-        final_index = self.process_merged_index(merged_index)
+        self.process_merged_index(merged_index, output_file)
 
-        try:
-            with open(output_file, "w", encoding="utf-8") as output:
-                json.dump(final_index, output, separators=(",", ": "))
-        finally:
-            for file in opened_files:
-                file.close()
 
     def run(self, files: iter):
         for file in files:
@@ -108,4 +111,4 @@ class Indexer:
         if self.partial_index:
             self.make_partial_index()
 
-        self.merge_partial_index("final.json")
+        self.merge_partial_index("final.jsonl")
