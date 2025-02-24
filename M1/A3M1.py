@@ -1,5 +1,4 @@
 import parse as p
-import tokenizer as t
 import index
 import nltk
 import time
@@ -16,6 +15,7 @@ def main() -> None:
     end_time = time.time()  # Record the end time
     elapsed_time = end_time - start_time  # Compute duration
     print(f"Execution time: {elapsed_time:.6f} seconds")
+
 
 
 if __name__ == "__main__":
