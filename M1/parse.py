@@ -30,12 +30,12 @@ def parse(content: str):
     title tokens, and other important tokens (header and bolded).
     """
     extracted_html_content = tokenizer.extract_text(content)
-    # title_text, important_text = tokenizer.extract_special_text(content)
-    # tokens = tokenizer.tokenize_text(extracted_html_content)
+    title_text, important_text = tokenizer.extract_special_text(content)
+    tokens = tokenizer.tokenGenerator(extracted_html_content)
 
     tokens = tokenizer.tokenGenerator(extracted_html_content)
-    title_text = tokenizer.tokenize_text(title_text)
-    # important_tokens = tokenizer.tokenize_text(important_text)
+    title_text = tokenizer.tokenGenerator(title_text)
+    important_tokens = tokenizer.tokenGenerator(important_text)
 
     stem_tokens =  tokenizer.porter_stem(tokens)
     title_stem_tokens = tokenizer.porter_stem(title_text)
