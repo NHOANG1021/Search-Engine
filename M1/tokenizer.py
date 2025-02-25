@@ -75,13 +75,6 @@ def add_weight(frequencies, weighted_frequencies, weight):
     return frequencies
 
 
-def tokenize_text(text: str) -> list[str]:
-    """
-    Given a string, returns a list of only alphanumeric tokens
-    """
-    clean_text = re.sub(r'[^a-zA-Z0-9\s]', '', text).lower()
-    return word_tokenize(clean_text)
-
 def tokenGenerator(text: str):
     """
     Yields tokens that match regex pattern

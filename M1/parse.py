@@ -48,5 +48,4 @@ def parse(content: str):
     weighted_frequencies1 = tokenizer.add_title_weight(frequencies, title_frequencies)
     weighted_frequencies2 = tokenizer.add_other_weight(weighted_frequencies1, important_frequencies)
 
-
     return weighted_frequencies2
