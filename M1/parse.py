@@ -9,7 +9,6 @@ def traverse_directory(root: str) -> iter:
     for root, dirs, files in os.walk(root):
         for file in files:
             yield os.path.join(root, file)
-    
 
 def compute_word_frequncies(tokens: list) -> list:
     """
@@ -18,27 +17,25 @@ def compute_word_frequncies(tokens: list) -> list:
     """
     token_dict = {}
     for token in tokens:
-        if token not in token_dict.keys():
+        if token not in token_dict:
             token_dict[token] = 1
         else:
             token_dict[token] += 1
             
-    sorted_frequencies = sorted(token_dict.items(), key=lambda x: (x[0], -x[1]))
-    return sorted_frequencies
+    return token_dict
 
-
-def parse(file: str):
+def parse(content: str):
     """
     Calls all the necessary functions to parse on all tokens,
     title tokens, and other important tokens (header and bolded).
     """
-    content = tokenizer.extract_contents(file)
-    extracted_html_content = tokenizer.extract_text(content['content'])
-    title_text, important_text = tokenizer.extract_special_text(content['content'])
+    extracted_html_content = tokenizer.extract_text(content)
+    # title_text, important_text = tokenizer.extract_special_text(content)
+    # tokens = tokenizer.tokenize_text(extracted_html_content)
 
-    tokens = tokenizer.tokenize_text(extracted_html_content)
+    tokens = tokenizer.tokenGenerator(extracted_html_content)
     title_text = tokenizer.tokenize_text(title_text)
-    important_tokens = tokenizer.tokenize_text(important_text)
+    # important_tokens = tokenizer.tokenize_text(important_text)
 
     stem_tokens =  tokenizer.porter_stem(tokens)
     title_stem_tokens = tokenizer.porter_stem(title_text)
