@@ -1,6 +1,7 @@
 import os
 import tokenizer
 
+
 def traverse_directory(root: str) -> iter:
     """
     Given a file path, recursively traverses a directory and returns a list of all .json files.
@@ -8,8 +9,6 @@ def traverse_directory(root: str) -> iter:
     for root, dirs, files in os.walk(root):
         for file in files:
             yield os.path.join(root, file)
-        for dir in dirs:
-            os.path.join(root, dir)
     
 
 def compute_word_frequncies(tokens: list) -> list:
@@ -27,16 +26,30 @@ def compute_word_frequncies(tokens: list) -> list:
     sorted_frequencies = sorted(token_dict.items(), key=lambda x: (x[0], -x[1]))
     return sorted_frequencies
 
+
 def parse(file: str):
     """
-    Calls all the necessary functions to parse
+    Calls all the necessary functions to parse on all tokens,
+    title tokens, and other important tokens (header and bolded).
     """
     content = tokenizer.extract_contents(file)
     extracted_html_content = tokenizer.extract_text(content['content'])
-    extracted_important_words = tokenizer.extract_special_text(content['content'])
-    tokens = tokenizer.tokenize_text(extracted_html_content)
-    important_tokens = tokenizer.tokenize_text(extracted_important_words)  # Use later
-    stem_tokens =  tokenizer.porter_stem(tokens)
-    frequencies = compute_word_frequncies(stem_tokens)
+    title_text, important_text = tokenizer.extract_special_text(content['content'])
 
-    return frequencies
+    tokens = tokenizer.tokenize_text(extracted_html_content)
+    title_text = tokenizer.tokenize_text(title_text)
+    important_tokens = tokenizer.tokenize_text(important_text)
+
+    stem_tokens =  tokenizer.porter_stem(tokens)
+    title_stem_tokens = tokenizer.porter_stem(title_text)
+    important_stem_tokens = tokenizer.porter_stem(important_tokens)
+
+    frequencies = compute_word_frequncies(stem_tokens)
+    title_frequencies = compute_word_frequncies(title_stem_tokens)
+    important_frequencies = compute_word_frequncies(important_stem_tokens)
+
+    weighted_frequencies1 = tokenizer.add_title_weight(frequencies, title_frequencies)
+    weighted_frequencies2 = tokenizer.add_other_weight(weighted_frequencies1, important_frequencies)
+
+
+    return weighted_frequencies2
