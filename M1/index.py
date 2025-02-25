@@ -130,7 +130,7 @@ class Indexer:
         # Go through every file in the iterable
         for file in files:
             # Every 500 files generate a new partial index file
-            if (self.curr_doc_id % 500 == 0):
+            if (self.curr_doc_id % 250 == 0):
                 self.make_partial_index()
             
             # Extract contents from a file and then parse it and update the partial index in memory

@@ -29,6 +29,8 @@ def extract_special_text(html_content):
     title_text = soup.title.get_text(strip=True) if soup.title else ''
     header_text = []
     bold_text = []
+    if not soup.body:
+        return title_text, ' '
 
     # Process the document as it is parsed, avoiding full searches
     for tag in soup.body.descendants:
@@ -73,14 +75,6 @@ def add_weight(frequencies, weighted_frequencies, weight):
             frequencies[word] *= weight
     
     return frequencies
-
-
-def tokenize_text(text: str) -> list[str]:
-    """
-    Given a string, returns a list of only alphanumeric tokens
-    """
-    clean_text = re.sub(r'[^a-zA-Z0-9\s]', '', text).lower()
-    return word_tokenize(clean_text)
 
 def tokenGenerator(text: str):
     """
