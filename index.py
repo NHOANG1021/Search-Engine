@@ -13,7 +13,7 @@ class Indexer:
     """
     def __init__(self):
         nltk.download('punkt')
-        self.directory = Path("partial_indexes")
+        self.directory = Path("resources/partial_indexes")
         self.directory.mkdir(parents=True, exist_ok=True)
         self.curr_doc_id = 1
         self.index_files = []
@@ -30,6 +30,9 @@ class Indexer:
         """
         Opens up a csv file to use as a map for doc ids and urls
         """
+        directory = Path("resources/")
+        if not directory.exists():
+            directory.mkdir(parents=True, exist_ok=True)
         with open(csv_file, 'a+', newline='') as f:
             csv_writer = writer(f)
             csv_writer.writerow([self.curr_doc_id, url])
@@ -145,4 +148,4 @@ class Indexer:
         if self.partial_index:
             self.make_partial_index()
         # Merges all partial indexes
-        self.merge_partial_index("final.jsonl")
+        self.merge_partial_index("resources/final.jsonl")
