@@ -1,5 +1,6 @@
 import os
 import tokenizer
+from sortedcontainers import SortedSet 
 
 
 def traverse_directory(root: str) -> iter:
@@ -58,4 +59,4 @@ def process_query(query: str) -> dict:
     """
     tokens = tokenizer.tokenGenerator(query)
     stemmed_tokens = tokenizer.porter_stem(tokens)
-    return set(sorted(stemmed_tokens))
+    return SortedSet(stemmed_tokens)
