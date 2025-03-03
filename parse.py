@@ -1,6 +1,6 @@
 import os
 import tokenizer
-from sortedcontainers import SortedSet
+from sortedcontainers import SortedSet 
 
 
 def traverse_directory(root: str) -> iter:
@@ -59,3 +59,12 @@ def process_query(query: str) -> dict:
     tokens = tokenizer.tokenGenerator(query)
     stemmed_tokens = tokenizer.porter_stem(tokens)
     return SortedSet(stemmed_tokens)
+
+def process_query(query: str) -> dict:
+    """
+    Returns a dictionary of stemmed words from a user's query
+    """
+    tokens = tokenizer.tokenGenerator(query)
+    stemmed_tokens = tokenizer.porter_stem(tokens)
+    return SortedSet(stemmed_tokens)
+

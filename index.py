@@ -13,7 +13,9 @@ class Indexer:
     """
     def __init__(self):
         nltk.download('punkt')
-        self.directory = Path("partial_indexes")
+        if not Path("resources").exists():
+            Path("resources").mkdir(parents=True, exist_ok=True)
+        self.directory = Path("resources/partial_indexes")
         self.directory.mkdir(parents=True, exist_ok=True)
         self.curr_doc_id = 1
         self.index_files = []
@@ -30,6 +32,9 @@ class Indexer:
         """
         Opens up a csv file to use as a map for doc ids and urls
         """
+        directory = Path("resources/")
+        if not directory.exists():
+            directory.mkdir(parents=True, exist_ok=True)
         with open(csv_file, 'a+', newline='') as f:
             csv_writer = writer(f)
             csv_writer.writerow([self.curr_doc_id, url])
@@ -99,7 +104,7 @@ class Indexer:
                     # Check if there is a previous token
                     if current_token is not None:
                         # Write the postings for the previous token to the output file
-                        output.write(json.dumps({current_token: current_postings}) + "\n")
+                        output.write(json.dumps({"key": current_token, "posting": current_postings}) + "\n")
                     # Start a new token
                     current_token = token
                     current_postings = postings
@@ -109,7 +114,7 @@ class Indexer:
 
             # Write the last token's postings to the output file
             if current_token is not None:
-                output.write(json.dumps({current_token: current_postings}) + "\n")
+                output.write(json.dumps({"key": current_token, "posting": current_postings}) + "\n")
 
     def merge_partial_index(self, output_file):
         """
@@ -145,4 +150,4 @@ class Indexer:
         if self.partial_index:
             self.make_partial_index()
         # Merges all partial indexes
-        self.merge_partial_index("final.jsonl")
+        self.merge_partial_index("resources/final.jsonl")
