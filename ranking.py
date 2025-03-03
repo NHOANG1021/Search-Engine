@@ -6,18 +6,20 @@ from collections import defaultdict
 def compare_query(url_word_freq, query):
     """
     Ranks documents based on cosine similarity using TF-IDF weighting
-
     """
 
-    # Extract all unique words
+    # Compute Document Frequency (DF) for IDF calculation
+    # Total number of documents
+    N = len(url_word_freq)
+    # Document frequency per term
+    df = defaultdict(int)  
+
+    # Collect all unique words across all documents
     all_words = set(word for doc in url_word_freq.values() for word, _ in doc)
 
-    # Compute Document Frequency (DF) for IDF calculation
-    N = len(url_word_freq)  # Total number of documents
-    df = defaultdict(int)  # Document frequency per term
-
     for doc in url_word_freq.values():
-        for word, _ in doc:
+        words_in_doc = set(word for word, _ in doc)
+        for word in words_in_doc:
             df[word] += 1
 
     # Compute IDF for each word
@@ -33,7 +35,6 @@ def compare_query(url_word_freq, query):
         return np.array(list(vector.values()))
 
     doc_vectors = {url: compute_tfidf_vector(doc) for url, doc in url_word_freq.items()}
-
 
     query_tf = defaultdict(int)
     for word in query:
@@ -55,7 +56,6 @@ def compare_query(url_word_freq, query):
 
     # Rank documents by similarity
     ranked_urls = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
-    print(ranked_urls[0])
     return ranked_urls
 
 def compare_documents(doc1_word_freq, doc2_word_freq):
