@@ -1,7 +1,6 @@
-import parse as p
-import tokenizer as t
-import index
-import nltk
+from parse import process_query
+from ranking import compare_query
+from search import Searcher
 import time
 
 # "C:\\Users\\fight\\OneDrive\\Desktop\\CS121\\Assignment3\\CS121_SearchEngine\\DEV"
@@ -9,14 +8,25 @@ def main() -> None:
     """
     Run the program
     """
-    start_time = time.time()
-    files = p.traverse_directory("C:\\Users\\Justi\\Downloads\\CS121\\Assignment3M1\\cs_121_A3\\DEV")
-    index_maker = index.Indexer()
-    index_maker.run(files)
-    end_time = time.time()  # Record the end time
-    elapsed_time = end_time - start_time  # Compute duration
-    print(f"Execution time: {elapsed_time:.6f} seconds")
-
+    with Searcher("resources\\final.jsonl", "resources\\doc_id_map.csv") as searcher:
+        q = input("Enter your query!: ")
+        while (q != "quit"):
+            query = process_query(q)
+            start_time = time.time()
+            results = searcher.conjunctive_search_set(query)
+            if results:
+                ranked_results = compare_query(results, query)
+                print("Ranked Documents by Cosine Similarity:")
+                count = 0
+                for url, score in ranked_results:
+                    if count == 5:
+                        break
+                    print(searcher.get_url_from_csv(url))
+                    count += 1
+                end_time = time.time()  # Record the end time
+                elapsed_time = end_time - start_time  # Compute duration
+                print(f"FINAL Execution time: {elapsed_time:.6f} seconds")
+            q = input("Enter your query!: ")
 
 
 if __name__ == "__main__":
