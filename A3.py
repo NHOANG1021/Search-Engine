@@ -19,15 +19,14 @@ def main() -> None:
                 print("Ranked Documents by Cosine Similarity:")
                 count = 0
                 for url, score in ranked_results:
-                    if count == 5:
+                    if count == 10:
                         break
-                    print(searcher.get_url_from_csv(url))
+                    print(url, score, searcher.get_url_from_csv(score))
                     count += 1
                 end_time = time.time()  # Record the end time
                 elapsed_time = end_time - start_time  # Compute duration
                 print(f"FINAL Execution time: {elapsed_time:.6f} seconds")
             q = input("Enter your query!: ")
-
 
 if __name__ == "__main__":
     main()

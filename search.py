@@ -2,7 +2,6 @@ import json
 import mmap
 from pathlib import Path
 from bisect import bisect_left
-import time
 
 def build_offset_index(jsonl_file: str, index_file: str, step: int = 1000) -> None:
     """
@@ -138,7 +137,7 @@ class Searcher:
         """
         postings = self.batch_find_postings(tokens)
 
-        # If any token has no postings return empty dict
+        # If any token has no postings or missing return empty dict
         try:
             if any(postings[token] is None for token in tokens):
                 return {}
