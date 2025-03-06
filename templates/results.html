@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>Counter Site</title>
+    <link rel="stylesheet" href="../static/css/search.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: left; padding-top: 20px; padding-bottom: 20px; padding-left: 15px; background-color: #545a63;">
+        <div>
+            <form action="/results" method="get">
+                <input type="text" class="search-input" placeholder="Enter your search..." required name="query">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
