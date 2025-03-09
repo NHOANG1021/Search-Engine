@@ -1,5 +1,5 @@
 from parse import process_query
-from ranking import compare_query
+import ranking
 from search import Searcher
 import time
 
@@ -15,10 +15,11 @@ def main() -> None:
             start_time = time.time()
             results = searcher.conjunctive_search_set(query)
             if results:
-                ranked_results = compare_query(results, query)
+                ranked_results = ranking.page_rank(results, query)
+                ranked_results = ranking.tf_idf(results, query)
                 print("Ranked Documents by Cosine Similarity:")
                 count = 0
-                for url, score in ranked_results:
+                for url, score in ranked_results.items():
                     if count == 10:
                         break
                     print(url, score, searcher.get_url_from_csv(url))

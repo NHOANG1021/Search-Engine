@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from parse import process_query
-from ranking import compare_query
+from ranking import merge_scores
 from search import Searcher
 import time
 
@@ -24,7 +24,7 @@ def results():
     
     ranked_results = []
     count = 0
-    for url, score in compare_query(results, query):
+    for url, score in merge_scores(results, query):
         if count == 5:
             break
         count += 1

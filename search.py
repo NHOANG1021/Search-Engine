@@ -162,7 +162,7 @@ class Searcher:
         common_docs = set.intersection(*[set(posting_dicts[token].keys()) for token in tokens])
 
         # Build result dictionary with token, frequency pairs for each doc_id
-        result_docs = {doc_id: [(token, posting_dicts[token][doc_id]) for token in tokens] for doc_id in common_docs}
+        result_docs = {doc_id: [(token, posting_dicts[token][doc_id], len(postings[token])) for token in tokens] for doc_id in common_docs}
 
         return result_docs
     

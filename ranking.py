@@ -16,11 +16,12 @@ def page_rank_tokens(url_word_freq) -> list:
 
     return result
 
-def page_rank_weights(url_word_freq, url_tokens) -> list:
+def page_rank_weights(url_word_freq) -> list:
     """
     Returns a list of the weights of each token
     """
     weights = []
+    url_tokens = page_rank_tokens(url_word_freq)
     for url, token in url_tokens:
         weight = []
         for posting in url_word_freq[url]:
@@ -32,12 +33,13 @@ def page_rank_weights(url_word_freq, url_tokens) -> list:
     
     return weights
 
-def page_rank(url_word_freq, weights, query) -> list[tuple[str, int]]:
+def page_rank(url_word_freq, query) -> list[tuple[str, int]]:
     """
     Grants a score for each url based off of a word's weight
     and how much in appears in comparision to the query
     """
     scores = {}
+    weights = page_rank_weights(url_word_freq)
     
     for i, (url, words) in enumerate(url_word_freq.items()):
         score = 0
@@ -50,7 +52,7 @@ def page_rank(url_word_freq, weights, query) -> list[tuple[str, int]]:
     return scores
 
 
-def tf_idf(url_word_freq, num_docs, query):
+def tf_idf(url_word_freq,  query, num_docs=55393):
     tf_idf_scores = {}
 
     for url, words in url_word_freq.items():
@@ -67,7 +69,9 @@ def tf_idf(url_word_freq, num_docs, query):
     return tf_idf_scores
 
 
-def merge_scores(tfidf_scores, pagerank_scores):
+def merge_scores(url_word_freq, query):
+    pagerank_scores = page_rank(url_word_freq, query)
+    tfidf_scores = tf_idf(url_word_freq, query)
     final_scores = {}
 
     for url, tfidf_score in tfidf_scores.items():
