@@ -21,7 +21,7 @@ def main() -> None:
                 for url, score in ranked_results:
                     if count == 10:
                         break
-                    print(url, score, searcher.get_url_from_csv(score))
+                    print(url, score, searcher.get_url_from_csv(url))
                     count += 1
                 end_time = time.time()  # Record the end time
                 elapsed_time = end_time - start_time  # Compute duration

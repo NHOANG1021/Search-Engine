@@ -49,7 +49,6 @@ def parse(content: str):
     weighted_frequencies1 = tokenizer.add_title_weight(frequencies, title_frequencies)
     weighted_frequencies2 = tokenizer.add_other_weight(weighted_frequencies1, important_frequencies)
 
-
     return weighted_frequencies2
 
 def process_query(query: str) -> dict:
@@ -59,12 +58,3 @@ def process_query(query: str) -> dict:
     tokens = tokenizer.tokenGenerator(query)
     stemmed_tokens = tokenizer.porter_stem(tokens)
     return SortedSet(stemmed_tokens)
-
-def process_query(query: str) -> dict:
-    """
-    Returns a dictionary of stemmed words from a user's query
-    """
-    tokens = tokenizer.tokenGenerator(query)
-    stemmed_tokens = tokenizer.porter_stem(tokens)
-    return SortedSet(stemmed_tokens)
-
