@@ -1,85 +1,83 @@
-import numpy as np
 import math
-from collections import defaultdict
 
 
-def compare_query(url_word_freq, query):
+def page_rank_tokens(url_word_freq) -> list:
     """
-    Ranks documents based on cosine similarity using TF-IDF weighting
+    Return a list of total number of tokens in a url
     """
+    result = []
+    for url, postings in url_word_freq.items():
+        total = 0
+        for posting in postings:
+            total += posting[1]
 
-    # Compute Document Frequency (DF) for IDF calculation
-    # Total number of documents
-    N = len(url_word_freq)
-    # Document frequency per term
-    df = defaultdict(int)  
+        data = url, total
+        result.append(data)
 
-    # Collect all unique words across all documents
-    all_words = set(word for doc in url_word_freq.values() for word, _ in doc)
+    return result
 
-    for doc in url_word_freq.values():
-        words_in_doc = set(word for word, _ in doc)
-        for word in words_in_doc:
-            df[word] += 1
-
-    # Compute IDF for each word
-    idf = {word: math.log((N + 1) / (df[word] + 1)) + 1 for word in all_words}
-
-    def compute_tfidf_vector(doc):
-        """
-        Convert Documents into TF-IDF Vectors
-        """
-        vector = {word: 0 for word in all_words}
-        for word, tf in doc:
-            vector[word] = tf * idf[word]
-        return np.array(list(vector.values()))
-
-    doc_vectors = {url: compute_tfidf_vector(doc) for url, doc in url_word_freq.items()}
-
-    query_tf = defaultdict(int)
-    for word in query:
-        query_tf[word] += 1  # TF of query words
-
-    query_vector = np.array([query_tf[word] * idf.get(word, 0) for word in all_words])
-
-    def compute_cosine_similarity(vec1, vec2):
-        """
-        Compute Cosine Similarity using numpy
-        """
-        dot_product = np.dot(vec1, vec2)
-        norm_vec1 = np.linalg.norm(vec1)
-        norm_vec2 = np.linalg.norm(vec2)
-        return dot_product / (norm_vec1 * norm_vec2) if norm_vec1 and norm_vec2 else 0
-
-    # Compute similarity score
-    similarities = {url: compute_cosine_similarity(query_vector, doc_vector) for url, doc_vector in doc_vectors.items()}
-
-    # Rank documents by similarity
-    ranked_urls = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
-    return ranked_urls
-
-def compare_documents(doc1_word_freq, doc2_word_freq):
+def page_rank_weights(url_word_freq, url_tokens) -> list:
     """
-    Compares two documents for their similarity score using
-    the same logic 
+    Returns a list of the weights of each token
     """
-    all_words = set(word for doc in [doc1_word_freq, doc2_word_freq] for word, _ in doc)
+    weights = []
+    for url, token in url_tokens:
+        weight = []
+        for posting in url_word_freq[url]:
+            weight_value = posting[1] / token
+            weight_value =  round(weight_value, 2)
+            
+            weight.append(round(weight_value, 2))
+        weights.append(weight)
+    
+    return weights
 
-    def compute_tf_vector(doc):
-        vector = {word: 0 for word in all_words}
-        for word, tf in doc:
-            vector[word] = tf
-        return np.array(list(vector.values()))
+def page_rank(url_word_freq, weights, query) -> list[tuple[str, int]]:
+    """
+    Grants a score for each url based off of a word's weight
+    and how much in appears in comparision to the query
+    """
+    scores = {}
+    
+    for i, (url, words) in enumerate(url_word_freq.items()):
+        score = 0
+        for j, (word, freq, df) in enumerate(words):
+            if word in query:
+                # Multiply frequency by corresponding weight
+                score += freq * weights[i][j]
+        scores[url] = score
+    
+    return scores
 
-    vec1 = compute_tf_vector(doc1_word_freq)
-    vec2 = compute_tf_vector(doc2_word_freq)
 
-    def compute_cosine_similarity(vec1, vec2):
-        dot_product = np.dot(vec1, vec2)
-        norm_vec1 = np.linalg.norm(vec1)
-        norm_vec2 = np.linalg.norm(vec2)
-        return dot_product / (norm_vec1 * norm_vec2) if norm_vec1 and norm_vec2 else 0
+def tf_idf(url_word_freq, num_docs, query):
+    tf_idf_scores = {}
 
-    similarity_score = compute_cosine_similarity(vec1, vec2)
+    for url, words in url_word_freq.items():
+        total_score = 0
+        for word, tf_t_d, df_t in words:  
+            if word in query:
+                tf = 1 + math.log(tf_t_d)
+                idf = math.log(num_docs / df_t)
+                total_score += tf * idf
 
-    return similarity_score
+        tf_idf_scores[url] = total_score
+    
+
+    return tf_idf_scores
+
+
+def merge_scores(tfidf_scores, pagerank_scores):
+    final_scores = {}
+
+    for url, tfidf_score in tfidf_scores.items():
+        pagerank_score = dict(pagerank_scores).get(url, 0)
+        final_scores[url] = tfidf_score * pagerank_score
+
+    sorted_final_scores = dict(sorted(final_scores.items(), key=lambda item: item[1], reverse=True))
+
+    return sorted_final_scores
+
+
+
+
