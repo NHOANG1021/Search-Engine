@@ -1,3 +1,6 @@
+import math
+
+
 def page_rank_tokens(url_word_freq) -> list:
     """
     Return a list of total number of tokens in a url
@@ -38,13 +41,43 @@ def page_rank(url_word_freq, weights, query) -> list[tuple[str, int]]:
     
     for i, (url, words) in enumerate(url_word_freq.items()):
         score = 0
-        for j, (word, freq) in enumerate(words):
+        for j, (word, freq, df) in enumerate(words):
             if word in query:
                 # Multiply frequency by corresponding weight
                 score += freq * weights[i][j]
         scores[url] = score
     
-    # Sort URLs by their computed scores in descending order
-    ranked_urls = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    return scores
+
+
+def tf_idf(url_word_freq, num_docs, query):
+    tf_idf_scores = {}
+
+    for url, words in url_word_freq.items():
+        total_score = 0
+        for word, tf_t_d, df_t in words:  
+            if word in query:
+                tf = 1 + math.log(tf_t_d)
+                idf = math.log(num_docs / df_t)
+                total_score += tf * idf
+
+        tf_idf_scores[url] = total_score
     
-    return ranked_urls
+
+    return tf_idf_scores
+
+
+def merge_scores(tfidf_scores, pagerank_scores):
+    final_scores = {}
+
+    for url, tfidf_score in tfidf_scores.items():
+        pagerank_score = dict(pagerank_scores).get(url, 0)
+        final_scores[url] = tfidf_score * pagerank_score
+
+    sorted_final_scores = dict(sorted(final_scores.items(), key=lambda item: item[1], reverse=True))
+
+    return sorted_final_scores
+
+
+
+
