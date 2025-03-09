@@ -92,6 +92,16 @@ class Searcher:
         if self.id_map:
             self.id_map.close()
 
+    def open(self):
+        self.data_file = open(self.index_file, "r")
+        self.id_map = open(self.id_map, "r")
+
+    def __del__(self):
+        if self.data_file:
+            self.data_file.close()
+        if self.id_map:
+            self.id_map.close()
+
     def batch_find_postings(self, tokens: set) -> dict:
         """
         Find postings for a batch of tokens efficiently using a memory map
