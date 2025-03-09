@@ -18,12 +18,10 @@
                 <img src="../static/images/home_icon.png" alt="home icon" width="86px" height="86px">
             </a>
             <form action="/results" method="get" style="display: flex; align-items: center;">
-                <input type="text" class="search-input" placeholder="Enter your search..." required name="query" value="{{ request.args.get('query', '') }}">
+                <input type="text" class="search-input" placeholder="Enter your search..." required autocomplete="off" name="query" value="{{ request.args.get('query', '') }}">
                 <button type="submit" class="search-button">Search</button>
             </form>
     </div>
-    <div>
-        {% block body %}{% endblock %}
-    </div>
+    {% block body %}{% endblock %}
 </body>
 </html>

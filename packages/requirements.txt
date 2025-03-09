@@ -7,3 +7,4 @@ mmap
 flask
 requests
 google
+flask_caching
