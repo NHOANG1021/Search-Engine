@@ -166,7 +166,10 @@ class Searcher:
 
         return result_docs
     
-    def get_url_from_csv(self, docid: int) -> str:
+    def get_url_from_csv(self, docid: int) -> tuple:
+        """
+        Returns a tuple of the url name and file location
+        """
         # Creates a memory mapped file that behaves like a byte array and is faster to read from
         with mmap.mmap(self.id_map.fileno(), 0, access=mmap.ACCESS_READ) as mm:
             # Binary search to get the closest indexed key
@@ -188,5 +191,5 @@ class Searcher:
                 entry = line.split(',')
                 # If we found the token add it to our results dict
                 if entry[0] == docid:
-                    return entry[1]
+                    return entry[1], entry[2]
             return None

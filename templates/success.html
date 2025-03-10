@@ -1,24 +1,62 @@
 {% extends "results_template.html" %}
 
 {% block body %}
-    <h6 style="color: rgb(189, 186, 186); margin-left: 2%; font-family: Arial, Helvetica, sans-serif; margin-bottom: 0%; margin-top: 10px;">Elapsed time: {{ etime }}s</h6>
+<h6 style="color: rgb(189, 186, 186); margin-left: 2%; font-family: Arial, Helvetica, sans-serif; margin-bottom: 0%; margin-top: 10px;">
+    Elapsed time: {{ etime }}s
+</h6>
 
-    {% for url in results %}
-    <div class="result" style="display: flex; justify-content: space-between; align-items: center;">
-        <h4 style="color: whitesmoke; font-family: Arial, sans-serif; margin-left: 1%; padding-top: 8px; padding-bottom: 8px;">
-            <a href="{{ url }}" style="text-decoration: none; color: inherit;">{{ url }}</a>
-        </h4>
-        <button class="btn btn-primary dropdown-button" type="button" data-bs-toggle="collapse" data-bs-target="#message-{{ loop.index }}" aria-expanded="false" aria-controls="message-{{ loop.index }}">
-            Show Summary
-        </button>
+{% for url in results %}
+<div class="result" style="display: flex; justify-content: space-between; align-items: center;">
+    <h4 style="color: whitesmoke; font-family: Arial, sans-serif; margin-left: 1%; padding-top: 8px; padding-bottom: 8px;">
+        <a href="{{ url.url }}" style="text-decoration: none; color: inherit;">{{ url.url }}</a>
+    </h4>
+    <button class="btn btn-primary dropdown-button" type="button" 
+            data-docid="{{ url.docid }}" data-bs-toggle="collapse" 
+            data-bs-target="#message-{{ loop.index }}" 
+            aria-expanded="false" aria-controls="message-{{ loop.index }}"
+            onclick="fetchSummary(this, {{ loop.index }})">
+        Show Summary
+    </button>
+</div>
+<div class="collapse" id="message-{{ loop.index }}">
+    <div class="card card-body" style="background-color: #353434; color: whitesmoke;" id="summary-{{ loop.index }}">
+        Click "Show Summary" to generate.
     </div>
-    <div class="collapse" id="message-{{ loop.index }}">
-        <div class="card card-body" style="background-color: #353434; color: whitesmoke;">
-            Message for: {{ url }}
-        </div>
-    </div>
-    {% endfor %}
+</div>
+{% endfor %}
 
-    <!-- Add Bootstrap JS (required for collapse functionality) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JavaScript to Fetch Summary and Toggle Collapse -->
+<script>
+function fetchSummary(button, index) {
+    let docid = button.getAttribute("data-docid");  // Change from data-url to data-docid
+    let summaryContainer = document.getElementById(`summary-${index}`);
+
+    // Check if already summarized to prevent redundant API calls
+    if (summaryContainer.dataset.fetched === "true") return;
+
+    summaryContainer.innerHTML = "Generating summary...";
+
+    fetch("/summarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ docid: docid })  // Send docid instead of url
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.summary) {
+            summaryContainer.innerHTML = data.summary;
+            summaryContainer.dataset.fetched = "true";  // Mark as fetched
+        } else {
+            summaryContainer.innerHTML = "Failed to generate summary.";
+        }
+    })
+    .catch(error => {
+        console.error("Error fetching summary:", error);
+        summaryContainer.innerHTML = "Error fetching summary.";
+    });
+}
+</script>
+
+<!-- Bootstrap JS (for collapse functionality) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

@@ -5,5 +5,5 @@ scikit-learn
 sortedcontainers
 flask
 requests
-google
+google-genai
 flask_caching
