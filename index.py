@@ -28,16 +28,17 @@ class Indexer:
         for token, freq in token_frequency.items():
                 self.partial_index[token].append([self.curr_doc_id, freq])
 
-    def update_id_map(self, url: str, csv_file: str) -> None:
+    def update_id_map(self, url: str, path:str, csv_file: str) -> None:
         """
         Opens up a csv file to use as a map for doc ids and urls
         """
         directory = Path("resources/")
         if not directory.exists():
             directory.mkdir(parents=True, exist_ok=True)
-        with open(csv_file, 'a+', newline='') as f:
+        filepath = directory / csv_file
+        with open(filepath, 'a+', newline='') as f:
             csv_writer = writer(f)
-            csv_writer.writerow([self.curr_doc_id, url])
+            csv_writer.writerow([self.curr_doc_id, url, path])
 
     def dump_partial_index(self, storage_file: str) -> None:
         """
@@ -137,13 +138,12 @@ class Indexer:
             # Every 500 files generate a new partial index file
             if (self.curr_doc_id % 250 == 0):
                 self.make_partial_index()
-            
             # Extract contents from a file and then parse it and update the partial index in memory
             contents = extract_contents(file)
             tokens = parse(contents["content"])
             self.update_partial_index(tokens)
-            # Updates the id mpa and and increments the doc id
-            self.update_id_map(contents["url"], "doc_id_map.csv")
+            # Updates the id map and and increments the doc id
+            self.update_id_map(contents["url"], file, "doc_id_map.csv")
             self.curr_doc_id += 1
         
         # Makes the last partial index

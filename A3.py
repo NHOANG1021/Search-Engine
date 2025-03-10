@@ -15,11 +15,10 @@ def main() -> None:
             start_time = time.time()
             results = searcher.conjunctive_search_set(query)
             if results:
-                ranked_results = ranking.page_rank(results, query)
-                ranked_results = ranking.tf_idf(results, query)
+                ranked_results = ranking.merge_scores(results, query)
                 print("Ranked Documents by Cosine Similarity:")
                 count = 0
-                for url, score in ranked_results.items():
+                for url, score in ranked_results:
                     if count == 10:
                         break
                     print(url, score, searcher.get_url_from_csv(url))

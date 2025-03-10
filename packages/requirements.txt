@@ -3,7 +3,6 @@ nltk
 lxml
 scikit-learn
 sortedcontainers
-mmap
 flask
 requests
 google

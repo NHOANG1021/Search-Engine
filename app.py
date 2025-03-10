@@ -22,7 +22,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/results", methods=["GET"])
-# @cache.cached(timeout=300, query_string=True)
+# @cache.cached(timeout=150, query_string=True)
 def results():
     q = request.args.get("query")
     if q is None:
@@ -41,6 +41,7 @@ def results():
         count += 1
         ranked_results.append(searcher.get_url_from_csv(url))
     elapsed_time = time.time() - start_time
+    
     return render_template("success.html", results=ranked_results, etime=f"{elapsed_time:.5f}")
 
 if __name__ == "__main__":

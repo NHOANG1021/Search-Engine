@@ -65,13 +65,13 @@ class Searcher:
     def __init__(self, index_file: str, id_map: str):
         if not Path("resources").exists():
             Path("resources").mkdir(parents=True, exist_ok=True)
-        if not Path("resources\\index_offsets.json").exists():
-            build_offset_index(index_file, "resources\\index_offsets.json")
-        if not Path("resources\\docid_offsets.json").exists():
-            build_csv_offset_index(id_map, "resources\\docid_offsets.json")
-        with open("resources\\index_offsets.json", 'r', encoding='utf-8') as f:
+        if not Path("resources/index_offsets.json").exists():
+            build_offset_index(index_file, "resources/index_offsets.json")
+        if not Path("resources/docid_offsets.json").exists():
+            build_csv_offset_index(id_map, "resources/docid_offsets.json")
+        with open("resources/index_offsets.json", 'r', encoding='utf-8') as f:
             self.offsets = json.load(f)
-        with open("resources\\docid_offsets.json", 'r', encoding='utf-8') as f:
+        with open("resources/docid_offsets.json", 'r', encoding='utf-8') as f:
             self.docid_offsets =  json.load(f)
         self.offset_keys = list(self.offsets)
         self.docid_keys = [int(i) for i in list(self.docid_offsets)]
