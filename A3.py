@@ -16,13 +16,9 @@ def main() -> None:
             results = searcher.conjunctive_search_set(query)
             if results:
                 ranked_results = ranking.merge_scores(results, query)
-                print("Ranked Documents by Cosine Similarity:")
-                count = 0
+                print("Ranked Documents")
                 for url, score in ranked_results:
-                    if count == 10:
-                        break
-                    print(url, score, searcher.get_url_from_csv(url))
-                    count += 1
+                    print(searcher.get_url_from_csv(url)[0])
                 end_time = time.time()  # Record the end time
                 elapsed_time = end_time - start_time  # Compute duration
                 print(f"FINAL Execution time: {elapsed_time:.6f} seconds")
