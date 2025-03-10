@@ -26,7 +26,6 @@ def summarize_webpage(api_key: str, resp: str) -> str:
     page_content = extracted_text[:5000]
     if "Error" in page_content:
         return page_content
-    print("fartbag")
     return gemini(api_key, page_content)
 
 

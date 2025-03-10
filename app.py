@@ -60,20 +60,15 @@ def summarize():
     """
     data = request.get_json()
     docid = data.get("docid")  # Correct key name
-    print(docid)
     if not docid:
         return jsonify({"error": "File is required"}), 400
 
     try:
         api_key = "AIzaSyDHRURf3ECW1mOCPXB5zfGn7ionHted2WE" 
-        print(api_key)
         contents = extract_contents(docid.strip())
-        print(contents)
         summary = g.summarize_webpage(api_key, contents["content"])
-        print(summary)
         return jsonify({"summary": summary})
     except Exception as e:
-        print(e)
         return jsonify({"error": f"Failed to summarize: {str(e)}"}), 500
 
 if __name__ == "__main__":
