@@ -9,8 +9,10 @@ Informatics
 University of California
 Anteater
 
-In general, the longer that the query became, the faster that it performed since we are doing boolean AND retrieval.
+In general, the longer that the query became, the faster that it performed since we are doing boolean AND retrieval. 
+The only time that the runtime seemed to increase significantly is when there were many postings to go through and rank.
 At first, queries were inconsistent just using cosine similarity so we revamped our ranking system to merge both 
 pagerank and tf-idf scores to fix that issue. However, the shorter, more common words such as ‘uci’ would typically 
-take the longest for our search engine to obtain results. We handled this by utilizing partial indexes and optimizing 
-the pagerank and tf-idf to run with better Big-O notation.
+take the longest for our search engine to obtain results. We handled this by indexing the indexes for posting retrieval and optimizing 
+the pagerank and tf-idf to run with better Big-O notation. Through the sorted nature of the postings, docids, and tokens we were able to
+implement binary search through a memory map allowing us to quickly retrieve results.
