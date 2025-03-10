@@ -16,12 +16,11 @@ def extract_text(html_content: str) -> str:
     """
     Extracts all text from the given HTML content.
     """
-    # add weights for BOLD, TITLES, HEADERS
     soup = BeautifulSoup(html_content, 'lxml')
     return soup.get_text(separator=' ', strip=True)
 
-# Not used yet
-def extract_special_text(html_content):
+
+def extract_special_text(html_content: str):
     """
     Extracts text from title, headers, and bold tags using a streaming approach via descendants.
     """
@@ -32,7 +31,7 @@ def extract_special_text(html_content):
     if not soup.body:
         return title_text, ' '
 
-    # Process the document as it is parsed, avoiding full searches
+    # Process the document as it is parsed - prevents excess searching
     for tag in soup.body.descendants:
         if tag.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
             header_text.append(tag.get_text(strip=True))
@@ -46,7 +45,7 @@ def extract_special_text(html_content):
     return title_text, special_text
 
 
-def add_title_weight(frequencies, title_frequencies):
+def add_title_weight(frequencies: dict, title_frequencies: dict) -> dict:
     """
     Calls the add_weight() helper function to increase the weight
     of title words by a factor of 3
@@ -54,7 +53,7 @@ def add_title_weight(frequencies, title_frequencies):
     return add_weight(frequencies, title_frequencies, 3)
 
 
-def add_other_weight(frequencies, important_frequencies):
+def add_other_weight(frequencies: dict, important_frequencies: dict) -> dict:
     """
     Calls the add_weight() helper function to increase the weight
     of header and bold words by a factor of 2
@@ -62,7 +61,7 @@ def add_other_weight(frequencies, important_frequencies):
     return add_weight(frequencies, important_frequencies, 2)
 
 
-def add_weight(frequencies, weighted_frequencies, weight):
+def add_weight(frequencies: dict, weighted_frequencies: dict, weight: int) -> dict:
     """
     Given total frequencies, weighted frequencies, and a corresponding weight,
     returns and updated dictionary of frequencies with weights applied.
@@ -76,7 +75,7 @@ def add_weight(frequencies, weighted_frequencies, weight):
     
     return frequencies
 
-def tokenGenerator(text: str):
+def tokenGenerator(text: str) -> iter:
     """
     Yields tokens that match regex pattern
     """

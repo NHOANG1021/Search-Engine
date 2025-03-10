@@ -1,16 +1,22 @@
 import math
 
-def page_rank_tokens(url_word_freq) -> list:
-    """Returns a list of total number of tokens in each URL."""
+def page_rank_tokens(url_word_freq: dict) -> list:
+    """
+    Returns a list of total number of tokens in each URL.
+    """
     return [(url, sum(posting[1] for posting in postings)) for url, postings in url_word_freq.items()]
 
-def page_rank_weights(url_word_freq) -> list:
-    """Returns a list of the weights of each token in a URL."""
+def page_rank_weights(url_word_freq: dict) -> list:
+    """
+    Returns a list of the weights of each token in a URL.
+    """
     url_tokens = {url: total for url, total in page_rank_tokens(url_word_freq)}
     return [[round(posting[1] / url_tokens[url], 2) for posting in postings] for url, postings in url_word_freq.items()]
 
-def page_rank(url_word_freq, query) -> dict:
-    """Computes a score for each URL based on word weights and query relevance."""
+def page_rank(url_word_freq: dict, query: list) -> dict:
+    """
+    Computes a score for each URL based on word weights and query relevance.
+    """
     scores = {}
     weights = page_rank_weights(url_word_freq)
 
@@ -19,8 +25,10 @@ def page_rank(url_word_freq, query) -> dict:
 
     return scores
 
-def tf_idf(url_word_freq, query, num_docs=55393) -> dict:
-    """Computes TF-IDF scores for each URL based on query relevance."""
+def tf_idf(url_word_freq: dict, query: list, num_docs=55393) -> dict:
+    """
+    Computes TF-IDF scores for each URL based on query relevance.
+    """
     return {
         url: sum(
             (1 + math.log(tf_t_d)) * math.log(num_docs / df_t)
@@ -29,7 +37,11 @@ def tf_idf(url_word_freq, query, num_docs=55393) -> dict:
         for url, words in url_word_freq.items()
     }
 
-def merge_scores(url_word_freq, query):
+def merge_scores(url_word_freq: dict, query: list) -> list:
+    """
+    Function that generates the top 5 urls based on
+    the average of pagerank and tfidf scoring methods
+    """
     pagerank_scores = page_rank(url_word_freq, query)
     tfidf_scores = tf_idf(url_word_freq, query)
 
