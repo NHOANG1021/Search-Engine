@@ -1,0 +1,16 @@
+Iftekhar Ahmed
+Machine learning
+ACM
+Master of software engineering
+Uci
+Thornton
+Computer science
+Informatics
+University of California
+Anteater
+
+In general, the longer that the query became, the faster that it performed since we are doing boolean AND retrieval.
+At first, queries were inconsistent just using cosine similarity so we revamped our ranking system to merge both 
+pagerank and tf-idf scores to fix that issue. However, the shorter, more common words such as ‘uci’ would typically 
+take the longest for our search engine to obtain results. We handled this by utilizing partial indexes and optimizing 
+the pagerank and tf-idf to run with better Big-O notation.
