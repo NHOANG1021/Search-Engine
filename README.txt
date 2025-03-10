@@ -3,7 +3,8 @@ In order to run the index you must simply declare an indexer object such as x = 
 utilizing the indexer and the directory of files that you want to index through such as “Dev”, the command will look
 something like this EX: x.run(“DEV”). This will now create a resources directory in the current file location and inside
 the directory will be a partial indexes directory with partial indexes of the files and final.json which will be the final index.
-The indexer will automatically go through every file in the directory and give it a doc id that will appear on the doc_id_map.csv. While it is operating partial indexes will be made every 500 documents and then merged together at the very end.
+The indexer will automatically go through every file in the directory and give it a doc id that will appear on the doc_id_map.csv. 
+While it is operating partial indexes will be made every 500 documents and then merged together at the very end.
 
 How to start the search interface and perform a query: 
 Functions called in main():
@@ -14,7 +15,7 @@ where keys are document IDs and values are lists of (token, frequency) pairs. Da
 
 merge_scores(results, query) -  takes the two rankings used in this search engine - page rank and tf-idf - 
 and merges the results into one final “score”. The highest five results will be shown onto the webpage with
-its corresponding AI generated summary.
+its corresponding AI generated summary. Afterwards you only need to loop through and print the final results
 
 In order to start the search interface you must run the app.py file in order to start the web server.
 This will result in the web server to be opened and a link to be printed in the terminal. After clicking on the

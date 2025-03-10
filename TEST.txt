@@ -1,13 +1,13 @@
-Iftekhar Ahmed
-Machine learning
-ACM
-Master of software engineering
-Uci
-Thornton
-Computer science
-Informatics
-University of California
-Anteater
+Iftekhar Ahmed # performed well
+Machine learning # performed well
+ACM # performed poorly
+Master of software engineering # performed well
+Uci     # performed poorly
+Thornton # performed poorly
+Computer science # performed poorly
+Informatics # performed poorly
+University of California # performed well
+Anteater # performed well
 
 In general, the longer that the query became, the faster that it performed since we are doing boolean AND retrieval. 
 The only time that the runtime seemed to increase significantly is when there were many postings to go through and rank.
